@@ -1,17 +1,16 @@
-package ltd.ygao.gmail.product;
+package ltd.ygao.gmail.coupon;
 
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
-
-@MapperScan("ltd.ygao.gmail.product.dao")
+@MapperScan("ltd.ygao.gmail.coupon.dao")
 @SpringBootApplication
 @EnableDiscoveryClient
-public class GmailProductApplication {
+public class GmailCouponApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(GmailProductApplication.class, args);
+        SpringApplication.run(GmailCouponApplication.class, args);
     }
 
 }

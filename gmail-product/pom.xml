@@ -20,6 +20,7 @@
     </properties>
 
     <dependencies>
+
         <dependency>
             <groupId>ltd.ygao.gmail</groupId>
             <artifactId>gmail-common</artifactId>

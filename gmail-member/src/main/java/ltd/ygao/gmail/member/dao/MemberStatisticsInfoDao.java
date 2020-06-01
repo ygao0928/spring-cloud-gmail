@@ -1,0 +1,17 @@
+package ltd.ygao.gmail.member.dao;
+
+import ltd.ygao.gmail.member.entity.MemberStatisticsInfoEntity;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Mapper;
+
+/**
+ * 会员统计信息
+ * 
+ * @author Kevin
+ * @email ygao0928@outlook.com
+ * @date 2020-06-01 00:49:14
+ */
+@Mapper
+public interface MemberStatisticsInfoDao extends BaseMapper<MemberStatisticsInfoEntity> {
+	
+}

@@ -4,11 +4,11 @@ spring:
       discovery:
         server-addr: 127.0.0.1:8848
     alicloud:
-      access-key: LTAI4GCPAt41V2dbf7v5sYKb
-      secret-key: f42Q00iXiKTG8XvrdZA2sIzOq7WawC
+      access-key: test
+      secret-key: test
       oss:
-        endpoint: oss-cn-shanghai.aliyuncs.com
-        bucket: gmail-ygao
+        endpoint: test
+        bucket: test
   application:
     name: gmail-third-party
 server:

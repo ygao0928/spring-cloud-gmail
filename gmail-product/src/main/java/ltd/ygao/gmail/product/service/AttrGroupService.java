@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import ltd.ygao.gmail.common.utils.PageUtils;
 import ltd.ygao.gmail.product.entity.AttrEntity;
 import ltd.ygao.gmail.product.entity.AttrGroupEntity;
+import ltd.ygao.gmail.product.vo.AttrGroupWithAttrsVo;
 
 import java.util.List;
 import java.util.Map;
@@ -20,6 +21,8 @@ public interface AttrGroupService extends IService<AttrGroupEntity> {
     PageUtils queryPage(Map<String, Object> params);
 
     PageUtils queryPage(Map<String, Object> params, Long catelogId);
+
+    List<AttrGroupWithAttrsVo> getAttrGroupWithAttrsByCatelogId(Long catelogId);
 
 }
 

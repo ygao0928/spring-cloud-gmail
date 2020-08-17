@@ -1,5 +1,6 @@
 package ltd.ygao.gmail.product.service.impl;
 
+import ltd.ygao.gmail.product.vo.SpuSaveVo;
 import org.springframework.stereotype.Service;
 import java.util.Map;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -11,6 +12,7 @@ import ltd.ygao.gmail.common.utils.Query;
 import ltd.ygao.gmail.product.dao.SpuInfoDao;
 import ltd.ygao.gmail.product.entity.SpuInfoEntity;
 import ltd.ygao.gmail.product.service.SpuInfoService;
+import org.springframework.transaction.annotation.Transactional;
 
 
 @Service("spuInfoService")
@@ -24,6 +26,11 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
         );
 
         return new PageUtils(page);
+    }
+@Transactional
+    @Override
+    public void saveSpuInfo(SpuSaveVo vo) {
+        
     }
 
 }

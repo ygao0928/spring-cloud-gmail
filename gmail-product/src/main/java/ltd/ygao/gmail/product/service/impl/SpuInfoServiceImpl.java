@@ -13,6 +13,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -123,6 +124,8 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
                     skuImagesEntity.setImgUrl(img.getImgUrl());
                     skuImagesEntity.setDefaultImg(img.getDefaultImg());
                     return skuImagesEntity;
+                }).filter(entity -> {
+                    return !StringUtils.isEmpty(entity.getImgUrl());
                 }).collect(Collectors.toList());
                 //5.2 保存sku的图片信息
                 skuImagesService.saveBatch(imagesEntities);
@@ -139,10 +142,13 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
                 SkuReductionTo skuReductionTo = new SkuReductionTo();
                 BeanUtils.copyProperties(item, skuReductionTo);
                 skuReductionTo.setSkuId(skuId);
-                R r1 = couponFeignService.saveSkuReduction(skuReductionTo);
-                if (r1.getCode() != 0) {
-                    log.error("远程调用sku优惠信息失败");
+                if (skuReductionTo.getFullCount() > 0 || skuReductionTo.getFullPrice().compareTo(new BigDecimal("0")) == 1) {
+                    R r1 = couponFeignService.saveSkuReduction(skuReductionTo);
+                    if (r1.getCode() != 0) {
+                        log.error("远程调用sku优惠信息失败");
+                    }
                 }
+
             });
         }
 

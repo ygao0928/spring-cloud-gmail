@@ -5,9 +5,7 @@ import ltd.ygao.gmail.common.constant.ProductConstant;
 import ltd.ygao.gmail.product.dao.AttrAttrgroupRelationDao;
 import ltd.ygao.gmail.product.dao.AttrGroupDao;
 import ltd.ygao.gmail.product.dao.CategoryDao;
-import ltd.ygao.gmail.product.entity.AttrAttrgroupRelationEntity;
-import ltd.ygao.gmail.product.entity.AttrGroupEntity;
-import ltd.ygao.gmail.product.entity.CategoryEntity;
+import ltd.ygao.gmail.product.entity.*;
 import ltd.ygao.gmail.product.service.CategoryService;
 import ltd.ygao.gmail.product.vo.AttrGroupRelationVo;
 import ltd.ygao.gmail.product.vo.AttrRespVo;
@@ -30,7 +28,6 @@ import ltd.ygao.gmail.common.utils.PageUtils;
 import ltd.ygao.gmail.common.utils.Query;
 
 import ltd.ygao.gmail.product.dao.AttrDao;
-import ltd.ygao.gmail.product.entity.AttrEntity;
 import ltd.ygao.gmail.product.service.AttrService;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -229,5 +226,7 @@ w.eq("attr_id",key).or().like("attr_name",key);
         PageUtils pageUtils = new PageUtils(page);
         return pageUtils;
     }
+
+
 
 }

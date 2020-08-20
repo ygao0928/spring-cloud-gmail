@@ -1,9 +1,12 @@
 package ltd.ygao.gmail.product.controller;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 
+import ltd.ygao.gmail.product.entity.ProductAttrValueEntity;
+import ltd.ygao.gmail.product.service.ProductAttrValueService;
 import ltd.ygao.gmail.product.vo.AttrGroupRelationVo;
 import ltd.ygao.gmail.product.vo.AttrRespVo;
 import ltd.ygao.gmail.product.vo.AttrVo;
@@ -28,8 +31,16 @@ import ltd.ygao.gmail.common.utils.R;
 public class AttrController {
     @Autowired
     private AttrService attrService;
+    @Autowired
+    ProductAttrValueService productAttrValueService;
 
+    ///product/attr/base/listforspu/{spuId}
+    @GetMapping("/base/listforspu/{spuId}")
+    public R baseAttrlistforspu(@PathVariable("spuId") Long spuId) {
+        List<ProductAttrValueEntity> entityList = productAttrValueService.baseAttrlistforspu(spuId);
 
+        return R.ok().put("data", entityList);
+    }
 
     @GetMapping("/{attrType}/list/{catelogId}")
     public R baseAttrList(@RequestParam Map<String, Object> params,
@@ -81,6 +92,14 @@ public class AttrController {
 //  @RequiresPermissions("product:attr:update")
     public R update(@RequestBody AttrVo attr) {
         attrService.updateAttr(attr);
+
+        return R.ok();
+    }
+    ///product/attr/update/{spuId}
+    @PostMapping("/update/{spuId}")
+    public R updateSpuAttr(@PathVariable("spuId")Long spuId,
+                          @RequestBody List<ProductAttrValueEntity> entities) {
+        productAttrValueService.updateSpuAttr(spuId,entities);
 
         return R.ok();
     }

@@ -17,3 +17,6 @@ mybatis-plus:
       id-type: auto
 server:
   port: 5000
+logging:
+  level:
+    ltd.ygao: debug

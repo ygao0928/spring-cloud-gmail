@@ -18,5 +18,6 @@
         <module>renren-fast</module>
         <module>renren-generator</module>
         <module>gmail-common</module>
+        <module>gmail-search</module>
     </modules>
 </project>

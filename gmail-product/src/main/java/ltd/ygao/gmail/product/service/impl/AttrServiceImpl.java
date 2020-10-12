@@ -61,7 +61,7 @@ public class AttrServiceImpl extends ServiceImpl<AttrDao, AttrEntity> implements
         //保存基本数据
         this.save(attrEntity);
         //保存关联关系
-        if (attr.getAttrType() == ProductConstant.AttrEnum.ATTR_TYPE_BASE.getCode()&&attr.getAttrGroupId()!=null) {
+        if (attr.getAttrType() == ProductConstant.AttrEnum.ATTR_TYPE_BASE.getCode() && attr.getAttrGroupId() != null) {
             AttrAttrgroupRelationEntity relationEntity = new AttrAttrgroupRelationEntity();
             relationEntity.setAttrGroupId(attr.getAttrGroupId());
             relationEntity.setAttrId(attrEntity.getAttrId());
@@ -100,7 +100,7 @@ public class AttrServiceImpl extends ServiceImpl<AttrDao, AttrEntity> implements
             //设置分类和分组的名字
             if ("base".equalsIgnoreCase(type)) {
                 AttrAttrgroupRelationEntity attr_id = relationDao.selectOne(new QueryWrapper<AttrAttrgroupRelationEntity>().eq("attr_id", attrEntity.getAttrId()));
-                if (attr_id != null&&attr_id.getAttrGroupId()!=null) {
+                if (attr_id != null && attr_id.getAttrGroupId() != null) {
                     AttrGroupEntity attrGroupEntity = attrGroupDao.selectById(attr_id.getAttrGroupId());
                     attrRespVo.setGroupName(attrGroupEntity.getAttrGroupName());
                 }
@@ -170,7 +170,7 @@ public class AttrServiceImpl extends ServiceImpl<AttrDao, AttrEntity> implements
         List<Long> attrIds = entities.stream().map((attr) -> {
             return attr.getAttrId();
         }).collect(Collectors.toList());
-        if (attrIds==null||attrIds.size()==0) {
+        if (attrIds == null || attrIds.size() == 0) {
             return null;
         }
         Collection<AttrEntity> attrEntities = this.listByIds(attrIds);
@@ -193,6 +193,7 @@ public class AttrServiceImpl extends ServiceImpl<AttrDao, AttrEntity> implements
 
     /**
      * 获取当前分组没有关联的所有属性
+     *
      * @param params
      * @param attrgroupId
      * @return
@@ -212,14 +213,14 @@ public class AttrServiceImpl extends ServiceImpl<AttrDao, AttrEntity> implements
             return item.getAttrId();
         }).collect(Collectors.toList());
         QueryWrapper<AttrEntity> wrapper = new QueryWrapper<AttrEntity>().eq("catelog_id", catelogId).eq("attr_type", ProductConstant.AttrEnum.ATTR_TYPE_BASE.getCode());
-        if (attrIds!=null&&attrIds.size()>0) {
+        if (attrIds != null && attrIds.size() > 0) {
             wrapper.notIn("attr_id", attrIds);
         }
         String key = (String) params.get("key");
 
-        if (!StringUtils.isEmpty(key)){
-            wrapper.and((w)->{
-w.eq("attr_id",key).or().like("attr_name",key);
+        if (!StringUtils.isEmpty(key)) {
+            wrapper.and((w) -> {
+                w.eq("attr_id", key).or().like("attr_name", key);
             });
         }
         IPage<AttrEntity> page = this.page(new Query<AttrEntity>().getPage(params), wrapper);
@@ -227,6 +228,11 @@ w.eq("attr_id",key).or().like("attr_name",key);
         return pageUtils;
     }
 
+    @Override
+    public List<Long> selectSearchAttrIds(List<Long> attrIds) {
+
+        return baseMapper.selectSearchAttrIds(attrIds);
+    }
 
 
 }

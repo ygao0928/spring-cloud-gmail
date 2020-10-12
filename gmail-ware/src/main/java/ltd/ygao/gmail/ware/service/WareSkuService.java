@@ -3,7 +3,9 @@ package ltd.ygao.gmail.ware.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import ltd.ygao.gmail.common.utils.PageUtils;
 import ltd.ygao.gmail.ware.entity.WareSkuEntity;
+import ltd.ygao.gmail.ware.vo.SkuHasStockVo;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -19,5 +21,6 @@ public interface WareSkuService extends IService<WareSkuEntity> {
 
     void addStock(Long skuId, Long wareId, Integer skuNum);
 
+    List<SkuHasStockVo> getSkuHasStock(List<Long> skuIds);
 }
 

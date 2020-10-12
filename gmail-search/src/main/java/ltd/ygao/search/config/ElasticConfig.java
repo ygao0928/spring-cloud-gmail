@@ -1,10 +1,7 @@
 package ltd.ygao.search.config;
 
 import org.apache.http.HttpHost;
-import org.elasticsearch.client.HttpAsyncResponseConsumerFactory;
-import org.elasticsearch.client.RequestOptions;
-import org.elasticsearch.client.RestClient;
-import org.elasticsearch.client.RestHighLevelClient;
+import org.elasticsearch.client.*;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -34,9 +31,9 @@ public class ElasticConfig {
 
     @Bean
     public RestHighLevelClient esRestClient() {
-        RestHighLevelClient client = new RestHighLevelClient(
-                RestClient.builder(
-                        new HttpHost("140.246.205.99", 9200, "http")));
+        RestClientBuilder builder = null;
+        builder = RestClient.builder(new HttpHost("140.246.205.99", 9200, "http"));
+        RestHighLevelClient client = new RestHighLevelClient(builder);
         return client;
     }
 }

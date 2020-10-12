@@ -31,7 +31,6 @@ public class OrderController {
 // @RequiresPermissions("coupon:order:list")
     public R list(@RequestParam Map<String, Object> params){
         PageUtils page = orderService.queryPage(params);
-
         return R.ok().put("page", page);
     }
 
@@ -76,7 +75,6 @@ public class OrderController {
 //   @RequiresPermissions("coupon:order:delete")
     public R delete(@RequestBody Long[] ids){
 		orderService.removeByIds(Arrays.asList(ids));
-
         return R.ok();
     }
 

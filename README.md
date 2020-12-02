@@ -3,7 +3,7 @@
 > 项目简介:
 >本项目主要是依据当下流行的spring-boot、spring-cloud、mybatis-plus、redis、
 >spring-cloud-alibaba、rabbitMQ、ES
->等技术框架，主要是来学习分布式项目的大致的开发步骤。内容是参照谷粒商城视频；
+>等技术框架，主要是来学习分布式项目的大致的开发步骤。
 
 #### 前台商城系统包括：
 - 用户登录

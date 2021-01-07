@@ -1,14 +1,17 @@
 package ltd.ygao.gmail.product.service.impl;
 
-import com.sun.xml.internal.bind.v2.TODO;
-import jdk.internal.util.xml.impl.Attrs;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import ltd.ygao.gmail.common.constant.ProductConstant;
 import ltd.ygao.gmail.common.to.SkuHasStockVo;
 import ltd.ygao.gmail.common.to.SkuReductionTo;
 import ltd.ygao.gmail.common.to.SpuBoundTo;
 import ltd.ygao.gmail.common.to.es.SkuEsModel;
+import ltd.ygao.gmail.common.utils.PageUtils;
+import ltd.ygao.gmail.common.utils.Query;
 import ltd.ygao.gmail.common.utils.R;
-import ltd.ygao.gmail.product.dao.SpuInfoDescDao;
+import ltd.ygao.gmail.product.dao.SpuInfoDao;
 import ltd.ygao.gmail.product.entity.*;
 import ltd.ygao.gmail.product.feign.CouponFeignService;
 import ltd.ygao.gmail.product.feign.SearchFeignService;
@@ -19,19 +22,11 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
-
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import ltd.ygao.gmail.common.utils.PageUtils;
-import ltd.ygao.gmail.common.utils.Query;
-
-import ltd.ygao.gmail.product.dao.SpuInfoDao;
-import org.springframework.transaction.annotation.Transactional;
 
 
 @Service("spuInfoService")
@@ -232,10 +227,10 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
         List<Long> searchAttrIds = attrService.selectSearchAttrIds(attrIds);
         Set<Long> idSet = new HashSet<>(searchAttrIds);
 
-        List<Attrs> attrsList = baseAttrs.stream().filter(item -> {
+        List<Attr> attrsList = baseAttrs.stream().filter(item -> {
             return idSet.contains(item.getAttrId());
         }).map(item -> {
-            Attrs attrs1 = new Attrs();
+            Attr attrs1 = new Attr();
             BeanUtils.copyProperties(item, attrs1);
             return attrs1;
         }).collect(Collectors.toList());

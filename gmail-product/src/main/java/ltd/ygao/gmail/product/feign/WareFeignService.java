@@ -21,6 +21,6 @@ import java.util.List;
 @FeignClient("gmail-ware")
 public interface WareFeignService {
     @PostMapping("/ware/waresku/hasstock")
-     R<List<SkuHasStockVo>> getSkuHasStock(@RequestBody List<Long> skuIds);
+     R getSkuHasStock(@RequestBody List<Long> skuIds);
 
 }

@@ -1,5 +1,6 @@
 package ltd.ygao.gmail.product.service.impl;
 
+import com.alibaba.fastjson.TypeReference;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -226,20 +227,20 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
         }).collect(Collectors.toList());
         List<Long> searchAttrIds = attrService.selectSearchAttrIds(attrIds);
         Set<Long> idSet = new HashSet<>(searchAttrIds);
-
-        List<Attr> attrsList = baseAttrs.stream().filter(item -> {
+        List<SkuEsModel.Attrs> attrsList = baseAttrs.stream().filter(item -> {
             return idSet.contains(item.getAttrId());
         }).map(item -> {
-            Attr attrs1 = new Attr();
+            SkuEsModel.Attrs attrs1 = new SkuEsModel.Attrs();
             BeanUtils.copyProperties(item, attrs1);
             return attrs1;
         }).collect(Collectors.toList());
         //TODO 1.发送远程调用，库存系统是否有库存
-
         Map<Long, Boolean> stockMap = null;
         try {
-            R<List<SkuHasStockVo>> skuHasStock = wareFeignService.getSkuHasStock(skuIdList);
-            stockMap = skuHasStock.getData().stream().collect(Collectors.toMap(SkuHasStockVo::getSkuId, item -> item.getHasStock()));
+            R r = wareFeignService.getSkuHasStock(skuIdList);
+            TypeReference<List<SkuHasStockVo>> reference = new TypeReference<List<SkuHasStockVo>>() {
+            };
+            stockMap = r.getData(reference).stream().collect(Collectors.toMap(SkuHasStockVo::getSkuId, item -> item.getHasStock()));
         } catch (Exception e) {
             log.error("库存服务查询异常：原因（）", e);
             e.printStackTrace();
@@ -265,8 +266,10 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
             esModel1.setBrandImg(brandEntity.getLogo());
             esModel1.setBrandName(brandEntity.getName());
             CategoryEntity categoryEntity = categoryService.getById(esModel1.getCatalogId());
+
             esModel1.setCatalogName(categoryEntity.getName());
-            esModel1.setAttrs(Collections.singletonList(attrsList));
+            //设置检索属性
+            esModel1.setAttrs(attrsList);
             return esModel1;
         }).collect(Collectors.toList());
         //TODO 5.将数据发送给es进行保存
@@ -278,6 +281,26 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
         } else {
             //远程调用失败
             // todo 7.重复调用,接口的幂等性：重试机制；
+            //Feign 调用流程
+            /**
+             * 1.构造请求数据，将对象转成json
+             *   RequestTemplate template = this.buildTemplateFromArgs.create(argv);
+             * 2.发送请求进行执行（执行成功会解码响应数据）
+             *   this.executeAndDecode(template, options);
+             * 3.执行请求会有重试机制
+             *      while(true){
+             *          try{
+             *              executeAndDecode(template, options);
+             *          }catch (){
+             *          try{
+             *              retryer.continueOrPropagate(e);
+             *          }catch{
+             *              throw ex;
+             *          }
+             *              continue;
+             *          }
+             *      }
+             */
         }
 
     }

@@ -9,7 +9,6 @@ import ltd.ygao.search.service.ProductSaveService;
 import org.elasticsearch.action.bulk.BulkRequest;
 import org.elasticsearch.action.bulk.BulkResponse;
 import org.elasticsearch.action.index.IndexRequest;
-import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.common.xcontent.XContentType;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,10 +51,11 @@ public class ProductSaveServiceImpl implements ProductSaveService {
         BulkResponse bulk = restHighLevelClient.bulk(bulkRequest, ElasticConfig.COMMON_OPTIONS);
         //TODO 如果批量错误
         boolean b = bulk.hasFailures();
+
         List<String> collect = Arrays.stream(bulk.getItems()).map(item -> {
             return item.getId();
         }).collect(Collectors.toList());
-        log.error("商品上架错误{}", collect);
+        log.info("商品上架完成{},返回数据：", collect,bulk.toString());
         return b;
     }
 }

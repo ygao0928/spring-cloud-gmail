@@ -9,8 +9,8 @@
 
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/
-
 # Package Files #
+/gmail-third-party/src/main/resources/application.yml
 *.jar
 *.war
 *.nar

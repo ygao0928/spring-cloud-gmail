@@ -1,4 +1,4 @@
-package ltd.ygao.gmail.product.controller;
+package ltd.ygao.gmail.product.app;
 
 import java.util.Arrays;
 import java.util.Map;

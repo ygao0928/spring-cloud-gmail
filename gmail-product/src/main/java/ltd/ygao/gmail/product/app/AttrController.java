@@ -1,4 +1,4 @@
-package ltd.ygao.gmail.product.controller;
+package ltd.ygao.gmail.product.app;
 
 import java.util.Arrays;
 import java.util.List;
@@ -7,13 +7,11 @@ import java.util.Map;
 
 import ltd.ygao.gmail.product.entity.ProductAttrValueEntity;
 import ltd.ygao.gmail.product.service.ProductAttrValueService;
-import ltd.ygao.gmail.product.vo.AttrGroupRelationVo;
 import ltd.ygao.gmail.product.vo.AttrRespVo;
 import ltd.ygao.gmail.product.vo.AttrVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import ltd.ygao.gmail.product.entity.AttrEntity;
 import ltd.ygao.gmail.product.service.AttrService;
 import ltd.ygao.gmail.common.utils.PageUtils;
 import ltd.ygao.gmail.common.utils.R;

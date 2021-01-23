@@ -13,9 +13,9 @@ spring:
         - id: product_route
           uri: lb://gmail-product
           predicates:
-              - Path=/api/product/**
+            - Path=/api/product/**
           filters:
-              - RewritePath=/api/(?<segment>/?.*),/$\{segment}
+            - RewritePath=/api/(?<segment>/?.*),/$\{segment}
         - id: third_party_route
           uri: lb://gmail-third-party
           predicates:
@@ -41,4 +41,8 @@ spring:
             - Path=/api/**
           filters:
             - RewritePath=/api/(?<segment>/?.*), /renren-fast/$\{segment}
+        - id: gulimall_host_route
+          uri: lb://gmail-product
+          predicates:
+            - Host=**.gulimall.com
 

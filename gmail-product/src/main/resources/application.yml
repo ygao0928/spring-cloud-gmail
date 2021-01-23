@@ -17,6 +17,11 @@ spring:
     name: gmail-product
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
+  thymeleaf:
+    cache: false
+  redis:
+    host: 192.168.56.10
+    port: 6379
 mybatis-plus:
   mapper-locations: classpath:/mapper/**/*.xml
   global-config:
@@ -29,4 +34,4 @@ server:
   port: 9000
 logging:
   level:
-    ltd.ygao.gmail.product: debug
+    ltd.ygao.gmail.product: error

@@ -1,14 +1,11 @@
-package ltd.ygao.gmail.product.controller;
+package ltd.ygao.gmail.product.app;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Map;
 
 import ltd.ygao.gmail.common.valid.AddGroup;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -20,8 +17,6 @@ import ltd.ygao.gmail.product.entity.BrandEntity;
 import ltd.ygao.gmail.product.service.BrandService;
 import ltd.ygao.gmail.common.utils.PageUtils;
 import ltd.ygao.gmail.common.utils.R;
-
-import javax.validation.Valid;
 
 
 /**

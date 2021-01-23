@@ -12,5 +12,4 @@ public class GmailGatewayApplication {
     public static void main(String[] args) {
         SpringApplication.run(GmailGatewayApplication.class, args);
     }
-
 }

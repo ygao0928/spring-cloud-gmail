@@ -5,10 +5,14 @@ import com.alibaba.fastjson.TypeReference;
 import ltd.ygao.gmail.product.service.CategoryBrandRelationService;
 import ltd.ygao.gmail.product.vo.Catelog2Vo;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.Validate;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.script.DefaultRedisScript;
 import org.springframework.stereotype.Service;
@@ -84,14 +88,22 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
      *
      * @param category
      */
+
+//    @Caching(evict = {
+//            @CacheEvict(value = "category", key = "'getLevel1Categorys'"),
+//            @CacheEvict(value = "category", key = "'getCatalogJson'")
+//    })
+    @CacheEvict(value = "category", allEntries = true)//失效模式  //删除同一片区的所有的数据
+    //  @CachePut //双写模式
     @Transactional
     @Override
     public void updateCascade(CategoryEntity category) {
         this.updateById(category);
         categoryBrandRelationService.updateCategory(category.getCatId(), category.getName());
     }
-//每一个缓存的数据需要我们都要指定放到那个名字的缓存
-    @Cacheable(value = "category",key = "'level1Catagory'")  //代表当前方法的结果需要缓存，如果缓存中有，方法不调用，如果缓存没有，会调用方法，最后将方法的结果
+
+    //每一个缓存的数据需要我们都要指定放到那个名字的缓存
+    @Cacheable(value = "category", key = "#root.method.name")  //代表当前方法的结果需要缓存，如果缓存中有，方法不调用，如果缓存没有，会调用方法，最后将方法的结果
     @Override
     public List<CategoryEntity> getLevel1Categorys() {
         System.out.println("getLevel1Categorys。。。。。。");
@@ -104,8 +116,8 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
     //todo redis会出现堆外内存溢出的异常
     //产生原因 lettuce-core 操作netty的内存回收异常
     //解决方案，更新lettuce。更换jedis
-    @Override
-    public Map<String, List<Catelog2Vo>> getCatalogJson() {
+    //@Override
+    public Map<String, List<Catelog2Vo>> getCatalogJson2() {
         /**
          * 1、空结果缓存设置过期时间：解决缓存的穿透
          * 2、给缓存的过期时间加上随机数防止大面积的key同一时间失效；解决缓存雪崩
@@ -126,6 +138,50 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
         Map<String, List<Catelog2Vo>> result = JSON.parseObject(catalogJson, new TypeReference<Map<String, List<Catelog2Vo>>>() {
         });
         return result;
+    }
+
+    /**
+     * spring-cache 的不足
+     * 1）、读模式：
+     * 缓存穿透：查询一个null数据。解决空数据：cache-null-value=true
+     * 缓存击穿：大量并发进来同时查询一个正好过期的数据，解决方案：加锁？
+     * 缓存雪崩：大量key 同时过期：解决方案：加随机时间
+     * 2）、写模式：（缓存宇与数据库一致）
+     *    1）、读写加锁
+     *    2）、引入Canal，感知MYSQL的更新去更新数据库
+     *    3）、读多写多，直接去查询数据库
+     * @return
+     */
+    @Cacheable(value = "category", key = "#root.methodName")
+    @Override
+    public Map<String, List<Catelog2Vo>> getCatalogJson() {
+        System.out.println("查询了数据库");
+        List<CategoryEntity> selectList = baseMapper.selectList(null);
+        //1.查出所有的一级分类
+        List<CategoryEntity> level1Categorys = getParent_cid(selectList, 0L);
+        //2.封装数据
+        Map<String, List<Catelog2Vo>> collect = level1Categorys.stream().collect(Collectors.toMap(k -> k.getCatId().toString(), v -> {
+            //1每一个的一级分类，查到这个一级分类的二级分类
+            List<CategoryEntity> categoryEntities = getParent_cid(selectList, v.getCatId());
+            List<Catelog2Vo> catelog2Vos = null;
+            if (categoryEntities != null) {
+                catelog2Vos = categoryEntities.stream().map(l2 -> {
+                    Catelog2Vo catelog2Vo = new Catelog2Vo(v.getCatId().toString(), null, l2.getCatId().toString(), l2.getName());
+                    //找当前的二级分类的三级分类封装成vo
+                    List<CategoryEntity> level3Category = getParent_cid(selectList, l2.getCatId());
+                    if (level3Category != null) {
+                        List<Catelog2Vo.Catelog3Vo> collect1 = level3Category.stream().map(l3 -> {
+                            Catelog2Vo.Catelog3Vo catelog3Vo = new Catelog2Vo.Catelog3Vo(l2.getCatId().toString(), l3.getCatId().toString(), l3.getName());
+                            return catelog3Vo;
+                        }).collect(Collectors.toList());
+                        catelog2Vo.setCatalog3List(collect1);
+                    }
+                    return catelog2Vo;
+                }).collect(Collectors.toList());
+            }
+            return catelog2Vos;
+        }));
+        return collect;
     }
 
     /**
@@ -197,6 +253,7 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
         /**
          * 将多次数据库的查询变为一次
          */
+        System.out.println("查询了数据库");
         List<CategoryEntity> selectList = baseMapper.selectList(null);
         //1.查出所有的一级分类
         List<CategoryEntity> level1Categorys = getParent_cid(selectList, 0L);
@@ -222,6 +279,7 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
             }
             return catelog2Vos;
         }));
+        //3. 查到的数据再放到缓存，将数据转为json放在缓存中
         redisTemplate.opsForValue().set("catalogJson", JSON.toJSONString(collect), 1, TimeUnit.DAYS);
         return collect;
     }

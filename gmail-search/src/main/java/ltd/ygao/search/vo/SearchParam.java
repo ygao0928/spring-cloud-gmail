@@ -26,6 +26,6 @@ public class SearchParam {
     private String skuPrice;//价格区间
     private List<Long> brandId;//按照品牌进行查询，多选
     private List<String> attrs;//按照属性
-    private Integer pageNum;
+    private Integer pageNum=1;
 
 }

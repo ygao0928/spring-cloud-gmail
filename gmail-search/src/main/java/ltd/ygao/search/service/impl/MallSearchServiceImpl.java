@@ -264,6 +264,11 @@ public class MallSearchServiceImpl implements MallSearchService {
         result.setPageNum(param.getPageNum());
         int totalPages = (int) total % EsConstant.PRODUCT_PAGESIZE == 0 ? (int) total % EsConstant.PRODUCT_PAGESIZE : ((int) total % EsConstant.PRODUCT_PAGESIZE + 1);
         result.setTotalPages(totalPages);
+        List<Integer> pageNavs = new ArrayList<>();
+        for(int i=1;i<=totalPages;i++){
+            pageNavs.add(i);
+        }
+        result.setPageNavs(pageNavs);
         return result;
     }
 

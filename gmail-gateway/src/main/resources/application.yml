@@ -6,28 +6,33 @@ spring:
           uri: https://baidu.com
           predicates:
             - Query=url,baidu
+
         - id: test_route
           uri: https://qq.com
           predicates:
             - Query=url,qq
+
         - id: product_route
           uri: lb://gmail-product
           predicates:
             - Path=/api/product/**
           filters:
             - RewritePath=/api/(?<segment>/?.*),/$\{segment}
+
         - id: third_party_route
           uri: lb://gmail-third-party
           predicates:
             - Path=/api/thirdparty/**
           filters:
             - RewritePath=/api/thirdparty/(?<segment>/?.*),/$\{segment}
+
         - id: member_route
           uri: lb://gmail-member
           predicates:
             - Path=/api/member/**
           filters:
             - RewritePath=/api/(?<segment>/?.*),/$\{segment}
+
         - id: ware_route
           uri: lb://gmail-ware
           predicates:
@@ -41,10 +46,19 @@ spring:
             - Path=/api/**
           filters:
             - RewritePath=/api/(?<segment>/?.*), /renren-fast/$\{segment}
+
         - id: gulimall_host_route
           uri: lb://gmail-product
           predicates:
             - Host=gulimall.com
+
+        - id: coupon_route
+          uri: lb://gmail-coupon
+          predicates:
+            - Path=/api/coupon/**
+          filters:
+            - RewritePath=/api/(?<segment>/?.*),/$\{segment}
+
         - id: gulimall_host_route
           uri: lb://gmail-search
           predicates:
